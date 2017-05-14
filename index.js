@@ -53,16 +53,16 @@ var permission = function (roles) {
       }
     }
 
-    if (req.isAuthenticated() && !req.user[role]) { throw new Error("User doesn't have property named: " +
+    if (req.session.user && !req.session.user[role]) { throw new Error("User doesn't have property named: " +
                                                        role + ". See Advantage Start in docs") }
 
-    if (req.isAuthenticated()) {
-      if (!roles || roles.indexOf(req.user[role]) > -1) {
+    if (req.session.user) {
+      if (!roles || roles.indexOf(req.session.user[role]) > -1) {
         after(req, res, next, permission.AUTHORIZED);
-      } else if (Object.prototype.toString.call(req.user[role]) === '[object Array]') {
+      } else if (Object.prototype.toString.call(req.session.user[role]) === '[object Array]') {
         var perm = permission.NOT_AUTHORIZED;
-        for (var i = 0; i < req.user[role].length; i++) {
-          if (roles.indexOf(req.user[role][i]) > -1) {
+        for (var i = 0; i < req.session.user[role].length; i++) {
+          if (roles.indexOf(req.session.user[role][i]) > -1) {
             perm = permission.AUTHORIZED;
             break;
           }
